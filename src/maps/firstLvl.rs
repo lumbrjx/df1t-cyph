@@ -1,5 +1,3 @@
-use std::collections::{HashMap, HashSet};
-
 const LETTER_MAP: [(&str, &[(&str, i32); 1]); 26] = [
     ("A", &[("Av", 67)]),
     ("B", &[("bQ", 14)]),
