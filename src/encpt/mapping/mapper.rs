@@ -1,17 +1,28 @@
-use crate::maps::first_lvl::*;
+use crate::maps::chars::*;
+use crate::maps::salt::*;
 
-// uncompleted
-pub fn mapper_lvl1(vc: Vec<&str>) -> Result<Vec<[&str; 3]>, &str> {
-    let mut result: Vec<[&str; 3]> = vec![];
-    for e in vc {
-        for s in CHAR_MAP {
-            if e == s[0] {
-                result.push(s);
-                println!("{:?}", s)
+#[derive(PartialEq)]
+pub enum MpType {
+    CharMap,
+    SaltMap,
+}
+
+pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
+    let mut result: Vec<&str> = vec![];
+    let mpp: [[&str; 3]; 85];
+    match mpt {
+        MpType::CharMap => mpp = CHAR_MAP,
+        MpType::SaltMap => mpp = SALT_MAP,
+    }
+    for e in &vc {
+        for s in mpp {
+            if e == &s[0] {
+                result.push(s[1]);
+                println!("{:?}", s[1])
             }
         }
     }
-    if result.is_empty() {
+    if result.len() != vc.len() {
         Err("No matching characters found")
     } else {
         Ok(result)
@@ -24,14 +35,7 @@ mod tests {
 
     #[test]
     fn try_char() {
-        let res = mapper_lvl1(vec!["A", "B", "C"]);
-        assert_eq!(
-            res,
-            Ok(vec![
-                ["A", "Av", "671"],
-                ["B", "bQ", "142"],
-                ["C", "TG", "243"]
-            ])
-        )
+        let res = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
+        assert_eq!(res, Ok(vec!["Av", "bQ", "TG"]))
     }
 }

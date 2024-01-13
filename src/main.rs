@@ -1,7 +1,8 @@
-use crate::encpt::mapping::mapper::mapper_lvl1;
+use crate::encpt::mapping::mapper::*;
 
 pub mod maps {
-    pub mod first_lvl;
+    pub mod chars;
+    pub mod salt;
 }
 mod shared {
     pub mod parse;
@@ -12,5 +13,5 @@ mod encpt {
     }
 }
 fn main() {
-    let _ = mapper_lvl1(vec!["A", "B", "C"]);
+    let _ = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
 }
