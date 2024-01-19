@@ -12,6 +12,11 @@ mod encpt {
         pub mod mapper;
     }
 }
+
 fn main() {
     let _ = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
+    match salt_extender(String::from("abc"), String::from("dsdfsqdfsqdff")) {
+        Ok(result) => println!("Result: {}", result),
+        Err(err) => eprintln!("Error: {}", err),
+    }
 }
