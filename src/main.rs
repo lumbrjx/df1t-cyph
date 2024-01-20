@@ -1,5 +1,5 @@
 use crate::encpt::mapping::mapper::*;
-
+use encpt::mapping::switcher::switch_chars;
 pub mod maps {
     pub mod chars;
     pub mod salt;
@@ -10,6 +10,7 @@ mod shared {
 mod encpt {
     pub mod mapping {
         pub mod mapper;
+        pub mod switcher;
     }
 }
 
@@ -19,4 +20,9 @@ fn main() {
         Ok(result) => println!("Result: {}", result),
         Err(err) => eprintln!("Error: {}", err),
     }
+    // DA fR FC
+    match switch_chars(vec!["AD", "fR", "Fm"], vec!["AD", "BR", "FC"]) {
+        Ok(res) => println!(" nested vec {:?}", res),
+        Err(err) => println!("hmmmm {}", err),
+    };
 }
