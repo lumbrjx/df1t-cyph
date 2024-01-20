@@ -22,7 +22,10 @@ fn main() {
     }
     // DA fR FC
     match switch_chars(vec!["AD", "fR", "Fm"], vec!["AD", "BR", "FC"]) {
-        Ok(res) => println!(" nested vec {:?}", res),
+        Ok(res) => println!("nested vec {:?}", res),
         Err(err) => println!("hmmmm {}", err),
     };
+    let charvc = vec!["A", "v", "b", "Q", "T", "G"];
+    let res = chr_to_mxas(charvc);
+    println!("{:?}", res)
 }

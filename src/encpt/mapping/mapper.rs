@@ -22,7 +22,6 @@ pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
         for s in mpp {
             if e == &s[0] {
                 result.push(s[1]);
-                println!("{:?}", s[1])
             }
         }
     }
@@ -33,6 +32,22 @@ pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
     }
 }
 
+pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
+    let mut result: Vec<&str> = vec![];
+
+    for e in &vc {
+        for s in CHAR_MAP {
+            if e == &s[0] {
+                result.push(s[2]);
+            }
+        }
+    }
+    if result.len() != vc.len() {
+        Err("No matching characters found")
+    } else {
+        Ok(result)
+    }
+}
 // extend salt based on string length
 #[derive(Debug)]
 struct EmptyValueError;
@@ -145,5 +160,12 @@ mod tests {
             }
             Err(err) => panic!("Unexpected error: {}", err),
         }
+    }
+
+    #[test]
+    fn chr_to_mxas_test() {
+        let charvc = vec!["A", "v", "b", "Q", "T", "G"];
+        let res = chr_to_mxas(charvc);
+        assert_eq!(res, Ok(vec!["671", "258", "421", "652", "790", "487"]))
     }
 }

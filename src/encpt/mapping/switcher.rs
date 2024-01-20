@@ -22,7 +22,6 @@ pub fn switch_chars<'a>(
         // Compare the characters
         match (salt_char1, salt_char2, password_char1, password_char2) {
             (Some(c1), Some(c2), Some(c3), Some(c4)) => {
-                println!(" chars {} , {}, {} , {} ", c1, c2, c3, c4);
                 if c1 != c3 {
                     char1 = c1.to_string();
                 }
