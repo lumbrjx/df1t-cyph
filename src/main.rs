@@ -1,5 +1,11 @@
 use crate::{
-    encpt::{mapping::mapper::*, math::matrix::fill_mtrx_gaps},
+    encpt::{
+        mapping::{
+            construct::{self, construct_str},
+            mapper::*,
+        },
+        math::matrix::fill_mtrx_gaps,
+    },
     shared::parse::str2_string_vec,
 };
 use encpt::{
@@ -20,6 +26,7 @@ mod encpt {
         pub mod process;
     }
     pub mod mapping {
+        pub mod construct;
         pub mod mapper;
         pub mod switcher;
     }
@@ -65,4 +72,10 @@ fn main() {
     // for d in s {
     //     println!("{:?}", d);
     // }
+    // Example usage
+    let dxxy = vec!["abc".to_string(), "def".to_string(), "ghi".to_string()];
+    let info = vec!["12".to_string(), "34".to_string(), "56".to_string()];
+
+    let result = construct_str(dxxy.clone(), info.clone());
+    println!("Result: {}", result);
 }
