@@ -16,15 +16,20 @@ pub fn flatten_vec(nstd: Vec<String>) -> Vec<String> {
     flatten
 }
 
-pub fn str2String_vec(nsrd: Vec<&str>) -> Vec<String> {
+pub fn str2_string_vec(nsrd: Vec<&str>) -> Vec<String> {
     let nsrd_as_strings: Vec<String> = nsrd.iter().map(|&s| s.to_string()).collect();
     nsrd_as_strings
 }
 
-pub fn split_by_five(chunk: Vec<String>) -> Vec<Vec<String>> {
-    let split_vectors: Vec<Vec<String>> = chunk.chunks(5).map(|chunk| chunk.to_vec()).collect();
+// need to change
+pub fn split_by_n(n: usize, chunk: Vec<String>) -> Vec<Vec<String>> {
+    let mut split_vectors: Vec<Vec<String>> = chunk.chunks(n).map(|chunk| chunk.to_vec()).collect();
+    if split_vectors.len() < n {
+        split_vectors.push(vec![]);
+    }
     split_vectors
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -62,7 +67,25 @@ mod tests {
     #[test]
     fn flatten_test() {
         let nsrd = vec!["Av", "bQ", "TG"];
-        let res = flatten_vec(str2String_vec(nsrd));
+        let res = flatten_vec(str2_string_vec(nsrd));
         assert_eq!(res, vec!["A", "v", "b", "Q", "T", "G"])
+    }
+    #[test]
+    fn split_by_6_28_elemnets() {
+        let ele = vec![
+            "785", "535", "789", "987", "123", "789", "785", "535", "789", "987", "123", "787",
+            "785", "535", "789", "987", "123", "456", "543", "528", "693", "285", "147", "556",
+            "753", "456", "456", "564",
+        ];
+        let exp = vec![
+            vec!["785", "535", "789", "987", "123", "789"],
+            vec!["785", "535", "789", "987", "123", "787"],
+            vec!["785", "535", "789", "987", "123", "456"],
+            vec!["543", "528", "693", "285", "147", "556"],
+            vec!["753", "456", "456", "564"],
+            vec![],
+        ];
+        let res = split_by_n(6, str2_string_vec(ele));
+        assert_eq!(res, exp)
     }
 }

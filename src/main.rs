@@ -1,4 +1,7 @@
-use crate::{encpt::mapping::mapper::*, shared::parse::str2String_vec};
+use crate::{
+    encpt::{mapping::mapper::*, math::matrix::fill_mtrx_gaps},
+    shared::parse::str2_string_vec,
+};
 use encpt::{mapping::switcher::switch_chars, math::matrix::char_to_mtrx};
 pub mod maps {
     pub mod chars;
@@ -32,11 +35,24 @@ fn main() {
     // let res = chr_to_mxas(charvc);
     // println!("{:?}", res)
 
-    let vecs = vec![
-        vec!["785", "535", "789", "987", "123"],
-        vec!["543", "528", "693", "285", "147"],
-        vec!["753"],
+    // let vecs = vec![
+    //     vec!["785", "535", "789", "987", "123"],
+    //     vec!["543", "528", "693", "285", "147"],
+    //     vec!["753"],
+    // ];
+    // let res = char_to_mtrx(vecs.iter().map(|c| str2_string_vec(c.to_vec())).collect());
+    // println!("{:?}", res);
+
+    let vecs1 = vec![
+        vec![785, 535, 789, 987, 123, 789],
+        vec![785, 535, 789, 987, 123, 787],
+        vec![785, 535, 789, 987, 123, 456],
+        vec![543, 528, 693, 285, 147, 556],
+        vec![753, 456, 456, 564],
+        vec![],
     ];
-    let res = char_to_mtrx(vecs.iter().map(|c| str2String_vec(c.to_vec())).collect());
-    println!("{:?}", res)
+    let res1 = fill_mtrx_gaps(6, vecs1);
+    for a in res1 {
+        println!("{:?}", a);
+    }
 }
