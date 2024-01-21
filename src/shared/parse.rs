@@ -21,7 +21,6 @@ pub fn str2_string_vec(nsrd: Vec<&str>) -> Vec<String> {
     nsrd_as_strings
 }
 
-// need to change
 pub fn split_by_n(n: usize, chunk: Vec<String>) -> Vec<Vec<String>> {
     let mut split_vectors: Vec<Vec<String>> = chunk.chunks(n).map(|chunk| chunk.to_vec()).collect();
     if split_vectors.len() < n {
@@ -30,6 +29,11 @@ pub fn split_by_n(n: usize, chunk: Vec<String>) -> Vec<Vec<String>> {
     split_vectors
 }
 
+pub fn rem_zeros(chunk: Vec<i32>) -> (Vec<i32>, usize) {
+    let count_zeros = chunk.iter().filter(|&&c| c == 0).count();
+    let filtered_chunk: Vec<i32> = chunk.into_iter().filter(|&c| c != 0).collect();
+    (filtered_chunk, count_zeros)
+}
 #[cfg(test)]
 mod tests {
     use super::*;

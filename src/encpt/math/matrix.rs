@@ -35,6 +35,30 @@ pub fn fill_mtrx_gaps(n: usize, orgnl_mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     filled_mtrx
 }
 
+pub fn mtrx_to_vecs(mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    let mut blue: Vec<i32> = vec![];
+    let mut green: Vec<i32> = vec![];
+    let mut red: Vec<i32> = vec![];
+    let mut res: Vec<Vec<i32>> = vec![];
+
+    for (i, element) in mtrx.iter().enumerate() {
+        for (j, sub) in element.iter().enumerate() {
+            if i > j {
+                blue.push(*sub);
+            } else if j > i {
+                green.push(*sub);
+            } else {
+                red.push(*sub);
+            }
+        }
+    }
+    res.push(green);
+    res.push(red);
+    res.push(blue);
+
+    res
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

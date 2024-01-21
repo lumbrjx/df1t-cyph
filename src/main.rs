@@ -2,9 +2,13 @@ use crate::{
     encpt::{mapping::mapper::*, math::matrix::fill_mtrx_gaps},
     shared::parse::str2_string_vec,
 };
-use encpt::{mapping::switcher::switch_chars, math::matrix::char_to_mtrx};
+use encpt::{
+    mapping::switcher::switch_chars,
+    math::matrix::{char_to_mtrx, mtrx_to_vecs},
+};
 pub mod maps {
     pub mod chars;
+    pub mod nums;
     pub mod salt;
 }
 mod shared {
@@ -13,6 +17,7 @@ mod shared {
 mod encpt {
     pub mod math {
         pub mod matrix;
+        pub mod process;
     }
     pub mod mapping {
         pub mod mapper;
@@ -43,16 +48,21 @@ fn main() {
     // let res = char_to_mtrx(vecs.iter().map(|c| str2_string_vec(c.to_vec())).collect());
     // println!("{:?}", res);
 
-    let vecs1 = vec![
-        vec![785, 535, 789, 987, 123, 789],
-        vec![785, 535, 789, 987, 123, 787],
-        vec![785, 535, 789, 987, 123, 456],
-        vec![543, 528, 693, 285, 147, 556],
-        vec![753, 456, 456, 564],
-        vec![],
-    ];
-    let res1 = fill_mtrx_gaps(6, vecs1);
-    for a in res1 {
-        println!("{:?}", a);
-    }
+    // let vecs1 = vec![
+    //     vec![785, 535, 789, 987, 123, 789],
+    //     vec![785, 535, 789, 987, 123, 787],
+    //     vec![785, 535, 789, 987, 123, 456],
+    //     vec![543, 528, 693, 285, 147, 556],
+    //     vec![753, 456, 456, 564, 0, 0],
+    //     vec![0, 0, 0, 0, 0, 0],
+    // ];
+    // // let res1 = fill_mtrx_gaps(6, vecs1);
+    // // for a in res1 {
+    // //     println!("{:?}", a);
+    // // }
+    // //
+    // let s = mtrx_to_vecs(vecs1);
+    // for d in s {
+    //     println!("{:?}", d);
+    // }
 }
