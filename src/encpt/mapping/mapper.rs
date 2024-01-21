@@ -11,7 +11,7 @@ pub enum MpType {
 }
 
 // map strings to vectors
-pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
+pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Vec<&str> {
     let mut result: Vec<&str> = vec![];
     let mpp: [[&str; 3]; 85];
     match mpt {
@@ -25,11 +25,8 @@ pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
             }
         }
     }
-    if result.len() != vc.len() {
-        Err("No matching characters found")
-    } else {
-        Ok(result)
-    }
+
+    result
 }
 
 pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
@@ -77,28 +74,28 @@ impl ExtValue {
     }
 }
 
-pub fn salt_extender(salt: String, password: String) -> Result<String, Box<dyn Error>> {
+pub fn salt_extender(salt: &str, password: &str) -> Result<String, Box<dyn Error>> {
     if salt.is_empty() || password.is_empty() {
         return Err(Box::new(EmptyValueError));
     }
 
     if salt.len() > password.len() {
         let res = ExtValue {
-            longer: salt,
-            shorter: password,
+            longer: salt.to_string(),
+            shorter: password.to_string(),
         };
         return Ok(res.ext_data());
     }
 
     if salt.len() < password.len() {
         let res = ExtValue {
-            longer: password,
-            shorter: salt,
+            longer: password.to_string(),
+            shorter: salt.to_string(),
         };
         return Ok(res.ext_data());
     }
 
-    Ok(salt)
+    Ok(salt.to_string())
 }
 
 #[cfg(test)]
@@ -108,13 +105,13 @@ mod tests {
     #[test]
     fn try_char() {
         let res = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
-        assert_eq!(res, Ok(vec!["Av", "bQ", "TG"]))
+        assert_eq!(res, vec!["Av", "bQ", "TG"])
     }
     #[test]
     fn salt_extender_longer() {
         let longer = String::from("abc");
         let shorter = String::from("dsdfsqdfsqdff");
-        match salt_extender(longer.clone(), shorter.clone()) {
+        match salt_extender(&longer, &shorter) {
             Ok(result) => {
                 let expected = String::from("abcabcabcabca");
                 assert_eq!(result, expected);
@@ -127,7 +124,7 @@ mod tests {
     fn salt_extender_shorter() {
         let longer = String::from("abc");
         let shorter = String::from("dsdfsqdfsqdff");
-        match salt_extender(shorter.clone(), longer.clone()) {
+        match salt_extender(&shorter, &longer) {
             Ok(result) => {
                 let expected = String::from("abcabcabcabca");
                 assert_eq!(result, expected);
@@ -139,7 +136,7 @@ mod tests {
     fn salt_extender_even() {
         let longer = String::from("dsdfsqdfsqdff");
         let shorter = String::from("dsdfsqdfsqdff");
-        match salt_extender(shorter.clone(), longer.clone()) {
+        match salt_extender(&shorter, &longer) {
             Ok(result) => {
                 let expected = String::from("dsdfsqdfsqdff");
                 assert_eq!(result, expected);
@@ -153,7 +150,7 @@ mod tests {
     fn salt_extender_empty() {
         let longer = String::from("");
         let shorter = String::from("");
-        match salt_extender(shorter.clone(), longer.clone()) {
+        match salt_extender(&shorter, &longer) {
             Ok(result) => {
                 let expected = String::from("dsdfsqdfsqdff");
                 assert_eq!(result, expected);

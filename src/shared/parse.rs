@@ -1,5 +1,5 @@
-pub fn split_string(input: String) -> Vec<String> {
-    let result: Vec<String> = input.chars().map(|c| c.to_string()).collect();
+pub fn split_string(input: &str) -> Vec<String> {
+    let result: Vec<String> = input.to_string().chars().map(|c| c.to_string()).collect();
     result
 }
 
@@ -19,6 +19,10 @@ pub fn flatten_vec(nstd: Vec<String>) -> Vec<String> {
 pub fn str2_string_vec(nsrd: Vec<&str>) -> Vec<String> {
     let nsrd_as_strings: Vec<String> = nsrd.iter().map(|&s| s.to_string()).collect();
     nsrd_as_strings
+}
+
+pub fn string_vec2_str(nsrd: &[String]) -> Vec<&str> {
+    nsrd.iter().map(|s| s.as_str()).collect()
 }
 
 pub fn split_by_n(n: usize, chunk: Vec<String>) -> Vec<Vec<String>> {
@@ -55,7 +59,7 @@ mod tests {
     fn parse_a_string() {
         let string = "sqdf 45h df";
         let result = vec!["s", "q", "d", "f", " ", "4", "5", "h", " ", "d", "f"];
-        let splitted = split_string(string.to_string());
+        let splitted = split_string(string);
 
         assert_eq!(result, splitted);
     }
@@ -63,7 +67,7 @@ mod tests {
     #[test]
     fn split_string_then_restor_it() {
         let string = "super secret 8 t8 --y strin_g=";
-        let splitted = split_string(string.to_string());
+        let splitted = split_string(string);
         let joined = join_string(splitted);
         assert_eq!(joined, string);
     }

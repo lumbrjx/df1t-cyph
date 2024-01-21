@@ -1,5 +1,6 @@
 use crate::{
     encpt::{
+        encrypt::df1t_encrypt,
         mapping::{
             construct::{self, construct_str},
             mapper::*,
@@ -21,6 +22,7 @@ mod shared {
     pub mod parse;
 }
 mod encpt {
+    pub mod encrypt;
     pub mod math {
         pub mod matrix;
         pub mod process;
@@ -73,9 +75,8 @@ fn main() {
     //     println!("{:?}", d);
     // }
     // Example usage
-    let dxxy = vec!["abc".to_string(), "def".to_string(), "ghi".to_string()];
-    let info = vec!["12".to_string(), "34".to_string(), "56".to_string()];
-
-    let result = construct_str(dxxy.clone(), info.clone());
-    println!("Result: {}", result);
+    let salt = "ABCDER";
+    let password = "SUPER";
+    let res = df1t_encrypt(password.to_owned(), salt.to_owned());
+    println!("{}", res.unwrap())
 }
