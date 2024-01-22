@@ -38,6 +38,41 @@ pub fn rem_zeros(chunk: Vec<i32>) -> (Vec<i32>, usize) {
     let filtered_chunk: Vec<i32> = chunk.into_iter().filter(|&c| c != 0).collect();
     (filtered_chunk, count_zeros)
 }
+
+pub fn move_elements_right(n: usize) -> Vec<&'static str> {
+    let vec = vec![
+        "e", "M", "y", "P", "c", "6", "I", "-", "8", "u", "F", "@", "b", "T", "w", ".", "J", "O",
+        "z", "p", ":", "W", "7", "v", "V", "K", "5", "H", "q", "f", "&", "/", "A", "{", "Z", "d",
+        "L", "9", "N", "R", "*", "h", "0", "D", "G", "]", "s", "3", "S", "r", "2", "Q", "}", "g",
+        "X", "x", "k", "<", "B", "(", "C", "j", "!", "U", "m", "a", "i", "o", "4", "l", "1", "E",
+        "t", "n",
+    ];
+    let len = vec.len();
+    if len == 0 {
+        return vec;
+    }
+    if n == 0 {
+        return vec;
+    }
+
+    let n = n % len; // Ensure n is within the range of vector length
+
+    // Create a new vector with the elements moved to the right
+    let mut new_vec = vec![Default::default(); len];
+    for i in 0..len {
+        new_vec[(i + n) % len] = vec[i].clone();
+    }
+
+    new_vec
+}
+
+pub fn get_elements_by_indexes(original: Vec<&str>, indexes: Vec<i32>) -> Vec<&str> {
+    indexes
+        .iter()
+        .filter_map(|&i| original.get(i as usize).cloned())
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

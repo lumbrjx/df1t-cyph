@@ -1,21 +1,6 @@
-use crate::{
-    encpt::{
-        encrypt::df1t_encrypt,
-        mapping::{
-            construct::{self, construct_str},
-            mapper::*,
-        },
-        math::matrix::fill_mtrx_gaps,
-    },
-    shared::parse::str2_string_vec,
-};
-use encpt::{
-    mapping::switcher::switch_chars,
-    math::matrix::{char_to_mtrx, mtrx_to_vecs},
-};
+use crate::encpt::{encrypt::df1t_encrypt, mapping::mapper::*};
 pub mod maps {
     pub mod chars;
-    pub mod nums;
     pub mod salt;
 }
 mod shared {
@@ -28,7 +13,6 @@ mod encpt {
         pub mod process;
     }
     pub mod mapping {
-        pub mod construct;
         pub mod mapper;
         pub mod switcher;
     }
@@ -75,8 +59,8 @@ fn main() {
     //     println!("{:?}", d);
     // }
     // Example usage
-    let salt = "ABCDER";
-    let password = "SUPER";
+    let salt = "sqdfqfgsffdqsdf";
+    let password = "radqsfdfdfdqsdf";
     let res = df1t_encrypt(password.to_owned(), salt.to_owned());
     println!("{}", res.unwrap())
 }

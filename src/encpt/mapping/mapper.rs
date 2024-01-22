@@ -11,7 +11,7 @@ pub enum MpType {
 }
 
 // map strings to vectors
-pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Vec<&str> {
+pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
     let mut result: Vec<&str> = vec![];
     let mpp: [[&str; 3]; 85];
     match mpt {
@@ -25,8 +25,11 @@ pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Vec<&str> {
             }
         }
     }
-
-    result
+    if result.len() != vc.len() {
+        Err("CharError: unrecognized char")
+    } else {
+        Ok(result)
+    }
 }
 
 pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
@@ -40,7 +43,7 @@ pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
         }
     }
     if result.len() != vc.len() {
-        Err("No matching characters found")
+        Err("CharError: unrecognized char")
     } else {
         Ok(result)
     }
@@ -105,7 +108,7 @@ mod tests {
     #[test]
     fn try_char() {
         let res = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
-        assert_eq!(res, vec!["Av", "bQ", "TG"])
+        assert_eq!(res, Ok(vec!["Av", "bQ", "TG"]))
     }
     #[test]
     fn salt_extender_longer() {
