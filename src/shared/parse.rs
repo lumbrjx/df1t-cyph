@@ -39,7 +39,24 @@ pub fn rem_zeros(chunk: Vec<i32>) -> (Vec<i32>, usize) {
     (filtered_chunk, count_zeros)
 }
 
-pub fn move_elements_right(n: usize) -> Vec<&'static str> {
+pub fn concat_every_three_elements(input_vec: Vec<&str>) -> Vec<String> {
+    let mut result_vec = Vec::new();
+
+    // Iterate over the input vector in chunks of three
+    for chunk in input_vec.chunks(3) {
+        // Concatenate the elements in each chunk
+        let concatenated = chunk.join("");
+        result_vec.push(concatenated);
+    }
+
+    result_vec
+}
+#[derive(PartialEq)]
+pub enum Mv_Direction {
+    LEFT,
+    RIGHT,
+}
+pub fn move_elements(n: usize, direction: Mv_Direction) -> Vec<&'static str> {
     let vec = vec![
         "e", "M", "y", "P", "c", "6", "I", "-", "8", "u", "F", "@", "b", "T", "w", ".", "J", "O",
         "z", "p", ":", "W", "7", "v", "V", "K", "5", "H", "q", "f", "&", "/", "A", "{", "Z", "d",
@@ -59,11 +76,18 @@ pub fn move_elements_right(n: usize) -> Vec<&'static str> {
 
     // Create a new vector with the elements moved to the right
     let mut new_vec = vec![Default::default(); len];
-    for i in 0..len {
-        new_vec[(i + n) % len] = vec[i].clone();
+    if direction == Mv_Direction::RIGHT {
+        for i in 0..len {
+            new_vec[(i + n) % len] = vec[i].clone();
+        }
+    }
+    if direction == Mv_Direction::LEFT {
+        for i in 0..len {
+            new_vec[i] = vec[(i + len - n) % len].clone();
+        }
     }
 
-    new_vec
+    new_vec.into_iter().take(10).collect()
 }
 
 pub fn get_elements_by_indexes(original: Vec<&str>, indexes: Vec<i32>) -> Vec<&str> {
@@ -71,6 +95,26 @@ pub fn get_elements_by_indexes(original: Vec<&str>, indexes: Vec<i32>) -> Vec<&s
         .iter()
         .filter_map(|&i| original.get(i as usize).cloned())
         .collect()
+}
+
+pub fn get_indexes(map: Vec<&str>, second: Vec<&str>) -> Vec<usize> {
+    // Check if both vectors have the same length
+
+    // Create a mapping of elements in the second vector to their indexes in the first vector
+    let mut index_map = std::collections::HashMap::new();
+    for (index, &element) in map.iter().enumerate() {
+        index_map.insert(element, index);
+    }
+
+    // Use the mapping to get the indexes of elements in the second vector
+    let indexes: Vec<usize> = second
+        .iter()
+        .flat_map(|&element| index_map.get(&element))
+        .cloned()
+        .collect();
+
+    // Check if all elements in the second vector were found in the first vector
+    indexes
 }
 
 #[cfg(test)]

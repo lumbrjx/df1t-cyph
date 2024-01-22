@@ -1,4 +1,4 @@
-use crate::encpt::{encrypt::df1t_encrypt, mapping::mapper::*};
+use crate::encpt::{decrypt::df1t_decrypt, encrypt::df1t_encrypt, mapping::mapper::*};
 pub mod maps {
     pub mod chars;
     pub mod salt;
@@ -7,7 +7,11 @@ mod shared {
     pub mod parse;
 }
 mod encpt {
+    pub mod decrypt;
     pub mod encrypt;
+    pub mod analyse {
+        pub mod read;
+    }
     pub mod math {
         pub mod matrix;
         pub mod process;
@@ -62,5 +66,8 @@ fn main() {
     let salt = "sqdfqfgsffdqsdf";
     let password = "radqsfdfdfdqsdf";
     let res = df1t_encrypt(password.to_owned(), salt.to_owned());
-    println!("{}", res.unwrap())
+
+    let saltt = "sqdfqfgsffdqsdf";
+    let res1 = df1t_decrypt(res.unwrap().to_owned(), saltt.to_owned());
+    println!("{}", res1.unwrap())
 }

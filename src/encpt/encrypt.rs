@@ -5,8 +5,8 @@ use crate::encpt::mapping::switcher::switch_chars;
 use crate::encpt::math::matrix::{calc_n, char_to_mtrx, fill_mtrx_gaps, mtrx_to_vecs};
 use crate::encpt::math::process::add_to_vec;
 use crate::shared::parse::{
-    flatten_vec, get_elements_by_indexes, join_string, move_elements_right, split_by_n,
-    split_string, str2_string_vec, string_vec2_str,
+    flatten_vec, get_elements_by_indexes, join_string, move_elements, split_by_n, split_string,
+    str2_string_vec, string_vec2_str, Mv_Direction,
 };
 use crate::{chr_to_mp, chr_to_mxas, salt_extender, MpType};
 
@@ -25,8 +25,6 @@ impl Error for ValueError {}
 struct EncptInfo {
     original_length: usize,
     salt_short: usize, // 0 : buffer, 1 : salt
-    mtrx_n: usize,
-    rd_len: usize,
 }
 pub fn is_salt_short<'a>(buffer: &'a str, salt: &'a str) -> bool {
     if buffer.len() > salt.len() {
@@ -46,15 +44,15 @@ pub fn flt_subvecs(n: usize, vc: Vec<i32>) -> Vec<String> {
 }
 pub fn ceaser_swap(indxs: Vec<String>, n: usize) -> Vec<&'static str> {
     let swp = get_elements_by_indexes(
-        move_elements_right(n),
+        move_elements(n, Mv_Direction::RIGHT),
         indxs.iter().map(|c| c.parse::<i32>().unwrap()).collect(),
     );
     swp
 }
 
-pub fn cyph_info(strct_element: usize) -> Vec<&'static str> {
+pub fn cyph_info(strct_element: usize, mv: usize) -> Vec<&'static str> {
     let cph = get_elements_by_indexes(
-        move_elements_right(0),
+        move_elements(mv, Mv_Direction::RIGHT),
         flatten_vec(split_string(strct_element.to_string().as_str()))
             .iter()
             .map(|c| c.parse::<i32>().unwrap())
@@ -125,10 +123,12 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
     let grn = &vecs_from_mtrx[0];
     let rd = &vecs_from_mtrx[1];
     let ble = &vecs_from_mtrx[2];
+    println!("heeey {:?} ,{}", &rd, &mtrx_n);
     // add mtrx_n to green and blue and the red length to red
     let grn_a: Vec<String> = flt_subvecs(mtrx_n, grn.to_vec());
-    let rd_a: Vec<String> = flt_subvecs(rd.len(), rd.to_vec());
+    let rd_a: Vec<String> = flt_subvecs(mtrx_n, rd.to_vec());
     let ble_a: Vec<String> = flt_subvecs(mtrx_n, ble.to_vec());
+    println!("{:?}", &grn_a);
     // ceaser
     let grn_swapped = ceaser_swap(grn_a.clone(), grn_a.len() + 2);
     let rd_swapped = ceaser_swap(rd_a.clone(), rd_a.len());
@@ -140,31 +140,27 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
             .iter()
             .map(|c| flatten_vec(c.iter().map(|&c| c.to_string()).collect()))
             .collect();
-
+    println!("{:?}", &parsed_mtrx);
     // faltten the matrix
     let flat_mtrx: Vec<String> = parsed_mtrx.into_iter().flatten().collect();
-
+    println!("flat : {:?}", &flat_mtrx);
     // fulfill info and encrypt it
     let info = EncptInfo {
         original_length: buffer.len(),
         salt_short: shrt,
-        mtrx_n: mtrx_n,
-        rd_len: rd.len(),
     };
-    let orgnl = cyph_info(info.original_length);
-    let slt_shrt = cyph_info(info.salt_short);
-    let mtrn = cyph_info(info.mtrx_n);
-    let rdln = cyph_info(info.rd_len);
+    let orgnl = cyph_info(info.original_length, 0);
+    let slt_shrt = cyph_info(info.salt_short, 1);
     let info_vec = vec![
         join_string(str2_string_vec(orgnl)),
         ";".to_string(),
         join_string(str2_string_vec(slt_shrt)),
-        ";".to_string(),
-        join_string(str2_string_vec(mtrn)),
-        ";".to_string(),
-        join_string(str2_string_vec(rdln)),
         "$".to_string(),
     ];
+    println!(
+        "{:?}",
+        join_string(info_vec.to_vec()) + &join_string(flat_mtrx.to_vec())
+    );
     // join info + encrypted
     Ok(join_string(info_vec) + &join_string(flat_mtrx))
 }
