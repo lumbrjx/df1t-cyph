@@ -63,11 +63,17 @@ fn main() {
     //     println!("{:?}", d);
     // }
     // Example usage
-    let salt = "sqdfqfgsffdqsdf";
-    let password = "radqsfdfdfdqsdf";
+    let salt = "sqdfqdqsdf";
+    let password = "radqsfdqsdf";
     let res = df1t_encrypt(password.to_owned(), salt.to_owned());
 
-    let saltt = "sqdfqfgsffdqsdf";
+    let saltt = "sqdfqdqsdf";
     let res1 = df1t_decrypt(res.unwrap().to_owned(), saltt.to_owned());
     println!("{}", res1.unwrap())
 }
+
+//[[652, 165, 314, 671, 113],
+// [422, 103, 923, 314, 194],
+// [113, 389, 314, 422, 652],
+// [923, 113, 194, 103, 422],
+// [652, 389, 000, 000, 000]]

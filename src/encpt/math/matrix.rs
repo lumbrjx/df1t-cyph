@@ -39,23 +39,49 @@ pub fn mtrx_to_vecs(mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     let mut blue: Vec<i32> = vec![];
     let mut green: Vec<i32> = vec![];
     let mut red: Vec<i32> = vec![];
-    let mut res: Vec<Vec<i32>> = vec![];
 
     for (i, element) in mtrx.iter().enumerate() {
         for (j, sub) in element.iter().enumerate() {
+            // println!("{:?} : {:?} => {:?}", i, j, sub);
             if i > j {
                 blue.push(*sub);
             } else if j > i {
+                println!("j : {:?}  => {:?}", j, sub);
                 green.push(*sub);
+                println!("{:?}", green);
             } else {
                 red.push(*sub);
             }
         }
     }
-    res.push(green);
-    res.push(red);
-    res.push(blue);
+    println!("{:?}", green);
 
+    let res: Vec<Vec<i32>> = vec![green, red, blue];
+    println!("res = {:?}", res);
+    println!("res = {:?}", res[0]);
+    res
+}
+
+pub fn vecs_to_mtrx(mtrx: Vec<Vec<i32>>) -> Vec<i32> {
+    let green = &mtrx[0];
+    let red = &mtrx[1];
+    let blue = &mtrx[2];
+    println!("grn {:?}", green);
+    println!("rd {:?}", red);
+    println!("ble {:?}", blue);
+    let mut res: Vec<i32> = vec![];
+    for (i, element) in mtrx.iter().enumerate() {
+        for (j, sub) in element.iter().enumerate() {
+            if i < j {
+                println!("poped {:?}", green.to_vec().remove(0));
+                res.push(green.to_vec().remove(0));
+            } else if j < i {
+                res.push(blue.to_vec().remove(0));
+            } else {
+                res.push(red.to_vec().remove(0));
+            }
+        }
+    }
     res
 }
 
@@ -89,5 +115,25 @@ mod tests {
         let e = 25;
         let res = calc_n(e);
         assert_eq!(res, 5);
+    }
+
+    #[test]
+    fn test_rvrs_vec_to_mtrx() {
+        let mtrx = vec![
+            vec![165, 314, 671, 113, 923, 314, 194, 422, 652, 422],
+            vec![652, 389, 652, 422, 103, 0],
+            vec![
+                103, 258, 716, 103, 389, 113, 652, 194, 113, 422, 0, 0, 0, 0, 0,
+            ],
+        ];
+
+        let expected = vec![
+            652, 165, 314, 671, 113, 422, 103, 923, 314, 194, 113, 389, 314, 422, 652, 923, 113,
+            194, 103, 422, 652, 389, 0, 0, 0,
+        ];
+
+        let res = vecs_to_mtrx(mtrx.clone());
+        // vecs_to_mtrx(mtrx);
+        assert_eq!(res, expected);
     }
 }

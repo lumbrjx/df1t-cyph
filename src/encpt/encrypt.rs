@@ -112,23 +112,25 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
         Err(e) => panic!("{}", e),
     }
     let mtrx_n = calc_n(mx_version.len());
-
+    println!("mx version {:?}", &mx_version);
     // split the chunk into unstructered matrix
     let splitted_empty = split_by_n(mtrx_n, str2_string_vec(mx_version));
     // structure the matrix by filling the gaps with 0's
     let splitted_filled = fill_mtrx_gaps(mtrx_n, char_to_mtrx(splitted_empty));
+    println!("the original matrix {:?}", &splitted_filled);
     // get the green, red, blue vecs from the matrix
     let vecs_from_mtrx = mtrx_to_vecs(splitted_filled);
-
+    println!("vecs from tmrx {:?}", vecs_from_mtrx);
     let grn = &vecs_from_mtrx[0];
     let rd = &vecs_from_mtrx[1];
     let ble = &vecs_from_mtrx[2];
-    println!("heeey {:?} ,{}", &rd, &mtrx_n);
+    println!("green {:?} ", &grn);
+    println!("red {:?} ", &rd);
+    println!("blue {:?} ", &ble);
     // add mtrx_n to green and blue and the red length to red
     let grn_a: Vec<String> = flt_subvecs(mtrx_n, grn.to_vec());
     let rd_a: Vec<String> = flt_subvecs(mtrx_n, rd.to_vec());
     let ble_a: Vec<String> = flt_subvecs(mtrx_n, ble.to_vec());
-    println!("{:?}", &grn_a);
     // ceaser
     let grn_swapped = ceaser_swap(grn_a.clone(), grn_a.len() + 2);
     let rd_swapped = ceaser_swap(rd_a.clone(), rd_a.len());
@@ -140,10 +142,8 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
             .iter()
             .map(|c| flatten_vec(c.iter().map(|&c| c.to_string()).collect()))
             .collect();
-    println!("{:?}", &parsed_mtrx);
     // faltten the matrix
     let flat_mtrx: Vec<String> = parsed_mtrx.into_iter().flatten().collect();
-    println!("flat : {:?}", &flat_mtrx);
     // fulfill info and encrypt it
     let info = EncptInfo {
         original_length: buffer.len(),
