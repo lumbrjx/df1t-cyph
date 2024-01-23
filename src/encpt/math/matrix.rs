@@ -1,4 +1,6 @@
 use std::f64;
+
+use crate::shared::parse::split_by_n;
 pub fn calc_n(chunk_len: usize) -> usize {
     let mut n = (chunk_len as f64).sqrt().round() as usize;
     let dif = n * n;
@@ -62,23 +64,40 @@ pub fn mtrx_to_vecs(mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     res
 }
 
+pub fn create_virt_mtrx(n: usize) -> Vec<Vec<i32>> {
+    let mut nested_vector: Vec<Vec<i32>> = Vec::with_capacity(n);
+
+    for _ in 0..n {
+        let inner_vector: Vec<i32> = vec![0; n];
+
+        nested_vector.push(inner_vector);
+    }
+
+    nested_vector
+}
+
 pub fn vecs_to_mtrx(mtrx: Vec<Vec<i32>>) -> Vec<i32> {
-    let green = &mtrx[0];
-    let red = &mtrx[1];
-    let blue = &mtrx[2];
-    println!("grn {:?}", green);
-    println!("rd {:?}", red);
-    println!("ble {:?}", blue);
+    let mut green = mtrx[0].clone();
+    let mut red = mtrx[1].clone();
+    let mut blue = mtrx[2].clone();
+
+    let virt_mtrx: Vec<Vec<i32>> = create_virt_mtrx(red.len());
+    // if n = 5 :
+    // [[0, 0, 0, 0, 0],
+    //  [0, 0, 0, 0, 0],
+    //  [0, 0, 0, 0, 0],
+    //  [0, 0, 0, 0, 0],
+    //  [0, 0, 0, 0, 0]]
+
     let mut res: Vec<i32> = vec![];
-    for (i, element) in mtrx.iter().enumerate() {
+    for (i, element) in virt_mtrx.iter().enumerate() {
         for (j, sub) in element.iter().enumerate() {
-            if i < j {
-                println!("poped {:?}", green.to_vec().remove(0));
-                res.push(green.to_vec().remove(0));
-            } else if j < i {
-                res.push(blue.to_vec().remove(0));
-            } else {
-                res.push(red.to_vec().remove(0));
+            if i < j && !green.is_empty() {
+                res.push(green.remove(0));
+            } else if j < i && !blue.is_empty() {
+                res.push(blue.remove(0));
+            } else if !red.is_empty() {
+                res.push(red.remove(0));
             }
         }
     }
@@ -117,23 +136,45 @@ mod tests {
         assert_eq!(res, 5);
     }
 
-    // #[test]
-    // fn test_rvrs_vec_to_mtrx() {
-    //     let mtrx = vec![
-    //         vec![165, 314, 671, 113, 923, 314, 194, 422, 652, 422],
-    //         vec![652, 389, 652, 422, 103, 0],
-    //         vec![
-    //             103, 258, 716, 103, 389, 113, 652, 194, 113, 422, 0, 0, 0, 0, 0,
-    //         ],
-    //     ];
+    #[test]
+    fn test_rvrs_vec_to_mtrx() {
+        let mtrx = vec![
+            vec![165, 314, 671, 113, 923, 314, 194, 422, 652, 422],
+            vec![652, 103, 314, 103, 0],
+            vec![422, 113, 389, 923, 113, 194, 652, 389, 0, 0],
+        ];
 
-    //     let expected = vec![
-    //         652, 165, 314, 671, 113, 422, 103, 923, 314, 194, 113, 389, 314, 422, 652, 923, 113,
-    //         194, 103, 422, 652, 389, 0, 0, 0,
-    //     ];
+        let expected = vec![
+            652, 165, 314, 671, 113, 422, 103, 923, 314, 194, 113, 389, 314, 422, 652, 923, 113,
+            194, 103, 422, 652, 389, 0, 0, 0,
+        ];
 
-    //     let res = vecs_to_mtrx(mtrx.clone());
-    //     // vecs_to_mtrx(mtrx);
-    //     assert_eq!(res, expected);
-    // }
+        let res = vecs_to_mtrx(mtrx.clone());
+        // vecs_to_mtrx(mtrx);
+        assert_eq!(res, expected);
+    }
+
+    #[test]
+
+    fn test_pop() {
+        fn poppp() {
+            let mut my_vector = vec![165, 314, 671, 113, 923, 314, 194, 422, 652, 422];
+
+            while !my_vector.is_empty() {
+                let removed_element = my_vector.remove(0);
+                println!("Removed element: {} , {:?}", removed_element, my_vector);
+            }
+        }
+        poppp()
+    }
 }
+
+// left: `[652, 165, 314, 671, 113, 923,
+//         422, 389, 314, 194, 422, 652,
+//  113, 389, 652, 422, 422, 103,
+// 923, 113, 194, 0, 652, 389, 0, 0]`,
+
+// right: `[652, 165, 314, 671, 113, 422,
+//          103, 923, 314, 194, 113, 389,
+//          314, 422, 652, 923, 113, 194,
+//103, 422, 652, 389, 0, 0, 0]`'
