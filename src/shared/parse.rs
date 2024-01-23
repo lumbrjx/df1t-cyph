@@ -33,17 +33,16 @@ pub fn split_by_n(n: usize, chunk: Vec<String>) -> Vec<Vec<String>> {
     split_vectors
 }
 
-pub fn rem_zeros(chunk: Vec<i32>) -> (Vec<i32>, usize) {
-    let count_zeros = chunk.iter().filter(|&&c| c == 0).count();
-    let filtered_chunk: Vec<i32> = chunk.into_iter().filter(|&c| c != 0).collect();
-    (filtered_chunk, count_zeros)
+pub fn rem_zeros(chunk: Vec<i32>) -> Vec<i32> {
+    let filtered_chunk: Vec<i32> = chunk.into_iter().filter(|&c| c != 101).collect();
+    filtered_chunk
 }
 
-pub fn concat_every_three_elements(input_vec: Vec<&str>) -> Vec<String> {
+pub fn concat_every_n_elements(input_vec: Vec<&str>, n: usize) -> Vec<String> {
     let mut result_vec = Vec::new();
 
     // Iterate over the input vector in chunks of three
-    for chunk in input_vec.chunks(3) {
+    for chunk in input_vec.chunks(n) {
         // Concatenate the elements in each chunk
         let concatenated = chunk.join("");
         result_vec.push(concatenated);

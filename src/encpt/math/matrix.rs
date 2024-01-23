@@ -28,7 +28,7 @@ pub fn fill_mtrx_gaps(n: usize, orgnl_mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
             let mut row = c.clone(); // Create a new row based on the original row
             if row.len() < n {
                 // If the row is shorter than n, extend it with zeros
-                row.extend(std::iter::repeat(0).take(n - row.len()));
+                row.extend(std::iter::repeat(101).take(n - row.len()));
             }
             row // Return the modified row
         })
@@ -48,19 +48,15 @@ pub fn mtrx_to_vecs(mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
             if i > j {
                 blue.push(*sub);
             } else if j > i {
-                println!("j : {:?}  => {:?}", j, sub);
                 green.push(*sub);
-                println!("{:?}", green);
             } else {
                 red.push(*sub);
             }
         }
     }
-    println!("{:?}", green);
 
     let res: Vec<Vec<i32>> = vec![green, red, blue];
-    println!("res = {:?}", res);
-    println!("res = {:?}", res[0]);
+
     res
 }
 

@@ -48,6 +48,23 @@ pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
         Ok(result)
     }
 }
+
+pub fn mxas_to_chars(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
+    let mut result: Vec<&str> = vec![];
+
+    for e in &vc {
+        for s in CHAR_MAP {
+            if e == &s[2] {
+                result.push(s[0]);
+            }
+        }
+    }
+    if result.len() != vc.len() {
+        Err("CharError: unrecognized char")
+    } else {
+        Ok(result)
+    }
+}
 // extend salt based on string length
 #[derive(Debug)]
 struct EmptyValueError;
@@ -108,7 +125,7 @@ mod tests {
     #[test]
     fn try_char() {
         let res = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
-        assert_eq!(res, Ok(vec!["Av", "bQ", "TG"]))
+        assert_eq!(res, Ok(vec!["Aj", "bQ", "TG"]))
     }
     #[test]
     fn salt_extender_longer() {

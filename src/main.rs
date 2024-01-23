@@ -23,6 +23,11 @@ mod encpt {
 }
 
 fn main() {
+    let f = "Dr0]DQSrSDD2QG2]DQDQQsGrS3rsGr";
+    let d = "NLhdd09DNDL0dd0dDD*Rh9DNZZ";
+    println!("grn : {}, ble : {}", f.len(), d.len());
+    //Dr0]DQSrSDD2QG2]DQDQQsGrS3rsGr
+    //NLhdd09DNDL0dd0dDD*Rh9DNZZ
     // let _ = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
     // match salt_extender(String::from("abc"), String::from("dsdfsqdfsqdff")) {
     //     Ok(result) => println!("Result: {}", result),
