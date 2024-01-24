@@ -2,6 +2,10 @@
 name = "df1t-cyph"
 version = "0.1.0"
 edition = "2021"
+description = "minimal rust encryption algorithm made by a solid structured sequential algorithms without any external cryptographic crates"
+repository ="https://github.com/CLOG9/df1t-cyph"
+readme = "README.md"
+keywords = ["encryption","hash","SHA","crypto", "cryptographic"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
