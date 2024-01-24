@@ -1,22 +1,21 @@
 use std::{error::Error, i32};
 
 use crate::{
-    encpt::math::{matrix::vecs_to_mtrx, process::rem_from_vec},
-    mxas_to_chars,
-    shared::parse::{
-        concat_every_n_elements, get_indexes, move_elements, rem_zeros, split_string,
-        string_vec2_str, Mv_Direction,
+    chr_to_mp, chr_to_mxas,
+    encpt::{
+        mapping::switcher::reference_to_origin,
+        math::{matrix::vecs_to_mtrx, process::rem_from_vec},
     },
+    salt_extender,
+    shared::parse::{
+        concat_every_n_elements, generate_a_string, get_indexes, join_string, move_elements,
+        pop_elements_from_vector, rem_zeros, split_string, str2_string_vec, string_vec2_str,
+        Mv_Direction,
+    },
+    DirecType, MpType,
 };
 
 use super::analyse::read::reader;
-
-#[derive(Debug)]
-struct EncptInfo {
-    original_length: usize,
-    salt_short: usize, // 0 : buffer, 1 : salt
-    mtrx_n: usize,
-}
 
 pub fn ceaser_unswap(indxs: Vec<String>, n: usize) -> Vec<i32> {
     let swp = get_indexes(
@@ -29,10 +28,28 @@ pub fn ceaser_unswap(indxs: Vec<String>, n: usize) -> Vec<i32> {
         .map(|c| c.parse::<i32>().unwrap())
         .collect()
 }
+pub fn ref_to_bfr_vec(salt: String, mx_as_to_char: Vec<String>) -> Vec<String> {
+    let salt_vec: Vec<&str>;
+
+    let binding = split_string(&salt);
+    match chr_to_mp(
+        string_vec2_str(&binding),
+        MpType::SaltMap,
+        DirecType::FORWARD,
+    ) {
+        Ok(t) => salt_vec = t,
+        Err(e) => panic!("{}", e),
+    };
+    let bfr_vec: Vec<String>;
+    match reference_to_origin(salt_vec, string_vec2_str(&mx_as_to_char)) {
+        Ok(t) => bfr_vec = t,
+        Err(e) => panic!("{}", e),
+    };
+    bfr_vec
+}
 pub fn df1t_decrypt(buffer: String, salt: String) -> Result<String, Box<dyn Error>> {
     let parsed_buffer = reader(buffer, "$");
-    let info = &parsed_buffer[0];
-    let parsed_info = reader(info.to_string(), ";");
+
     // split each vector
     let grn = split_string(&parsed_buffer[1]);
     let rd = split_string(&parsed_buffer[2]);
@@ -53,13 +70,64 @@ pub fn df1t_decrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
         .map(|c| c.to_string())
         .collect();
 
+    // extended version of buffer
     let mx_as_to_char: Vec<String>;
-    match mxas_to_chars(string_vec2_str(&restored_mtrx)) {
+    match chr_to_mxas(string_vec2_str(&restored_mtrx), DirecType::BACKWARD) {
         Ok(t) => mx_as_to_char = concat_every_n_elements(t, 2),
         Err(e) => panic!("{}", e),
     };
-    println!("{:?}", mx_as_to_char);
-    Ok(salt)
+
+    // original length of the buffer before cyph
+    let orgnl = ceaser_unswap(split_string(&parsed_buffer[0].clone()), 142);
+
+    if orgnl[0] > salt.len() as i32 {
+        // extending the salt
+        let virt_str = generate_a_string(orgnl[0] as usize);
+        let slt_extd: String;
+        match salt_extender(&salt, &virt_str) {
+            Ok(t) => slt_extd = t,
+            Err(e) => panic!("{}", e),
+        };
+        // translating the salt to first level map
+        let bfr_vec = ref_to_bfr_vec(slt_extd, mx_as_to_char);
+        println!("{:?}", bfr_vec);
+        match chr_to_mp(
+            string_vec2_str(&bfr_vec),
+            MpType::CharMap,
+            DirecType::BACKWARD,
+        ) {
+            Ok(t) => return Ok(join_string(str2_string_vec(t))),
+            Err(e) => panic!("{}", e),
+        };
+        // last parse
+    } else if orgnl[0] < salt.len() as i32 {
+        // translating the salt to first level map
+        let mut bfr_vec = ref_to_bfr_vec(salt.clone(), mx_as_to_char);
+        // pop the extended elements
+        pop_elements_from_vector(&mut bfr_vec, salt.len() - orgnl[0] as usize);
+        println!("{:?}", bfr_vec);
+
+        match chr_to_mp(
+            string_vec2_str(&bfr_vec),
+            MpType::CharMap,
+            DirecType::BACKWARD,
+        ) {
+            Ok(t) => return Ok(join_string(str2_string_vec(t))),
+            Err(e) => panic!("{}", e),
+        };
+    } else {
+        // translating the salt to first level map
+        let bfr_vec = ref_to_bfr_vec(salt.clone(), mx_as_to_char);
+        println!("{:?}", bfr_vec);
+        match chr_to_mp(
+            string_vec2_str(&bfr_vec),
+            MpType::CharMap,
+            DirecType::BACKWARD,
+        ) {
+            Ok(t) => return Ok(join_string(str2_string_vec(t))),
+            Err(e) => panic!("{}", e),
+        };
+    }
 }
 
 // mx version ["652", "165", "314", "671", "113", "422", "103", "923", "314", "194", "113", "389", "314", "422", "652", "923", "113", "194", "103", "422", "652", "389"]

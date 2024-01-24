@@ -10,18 +10,29 @@ pub enum MpType {
     SaltMap,
 }
 
+#[derive(PartialEq)]
+pub enum DirecType {
+    FORWARD,
+    BACKWARD,
+}
 // map strings to vectors
-pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
+pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType, direc: DirecType) -> Result<Vec<&str>, &str> {
     let mut result: Vec<&str> = vec![];
-    let mpp: [[&str; 3]; 85];
+    let mpp: [[&str; 3]; 62];
+    let mut fs: usize = 0;
+    let mut sc: usize = 1;
+    if direc == DirecType::BACKWARD {
+        fs = 1;
+        sc = 0
+    }
     match mpt {
         MpType::CharMap => mpp = CHAR_MAP,
         MpType::SaltMap => mpp = SALT_MAP,
     }
     for e in &vc {
         for s in mpp {
-            if e == &s[0] {
-                result.push(s[1]);
+            if e == &s[fs] {
+                result.push(s[sc]);
             }
         }
     }
@@ -32,13 +43,19 @@ pub fn chr_to_mp(vc: Vec<&str>, mpt: MpType) -> Result<Vec<&str>, &str> {
     }
 }
 
-pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
+pub fn chr_to_mxas(vc: Vec<&str>, direc: DirecType) -> Result<Vec<&str>, &str> {
     let mut result: Vec<&str> = vec![];
-
+    let mut fs: usize = 0;
+    let mut sc: usize = 2;
+    if direc == DirecType::BACKWARD {
+        fs = 2;
+        sc = 0
+    }
     for e in &vc {
         for s in CHAR_MAP {
-            if e == &s[0] {
-                result.push(s[2]);
+            if e == &s[fs] {
+                println!("{}", e);
+                result.push(s[sc]);
             }
         }
     }
@@ -49,22 +66,6 @@ pub fn chr_to_mxas(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
     }
 }
 
-pub fn mxas_to_chars(vc: Vec<&str>) -> Result<Vec<&str>, &str> {
-    let mut result: Vec<&str> = vec![];
-
-    for e in &vc {
-        for s in CHAR_MAP {
-            if e == &s[2] {
-                result.push(s[0]);
-            }
-        }
-    }
-    if result.len() != vc.len() {
-        Err("CharError: unrecognized char")
-    } else {
-        Ok(result)
-    }
-}
 // extend salt based on string length
 #[derive(Debug)]
 struct EmptyValueError;
@@ -115,7 +116,7 @@ pub fn salt_extender(salt: &str, password: &str) -> Result<String, Box<dyn Error
         return Ok(res.ext_data());
     }
 
-    Ok(salt.to_string())
+    Ok(password.to_string())
 }
 
 #[cfg(test)]
@@ -124,7 +125,7 @@ mod tests {
 
     #[test]
     fn try_char() {
-        let res = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap);
+        let res = chr_to_mp(vec!["A", "B", "C"], MpType::CharMap, DirecType::FORWARD);
         assert_eq!(res, Ok(vec!["Aj", "bQ", "TG"]))
     }
     #[test]
@@ -182,7 +183,7 @@ mod tests {
     #[test]
     fn chr_to_mxas_test() {
         let charvc = vec!["A", "v", "b", "Q", "T", "G"];
-        let res = chr_to_mxas(charvc);
+        let res = chr_to_mxas(charvc, DirecType::FORWARD);
         assert_eq!(res, Ok(vec!["671", "258", "421", "652", "790", "487"]))
     }
 }

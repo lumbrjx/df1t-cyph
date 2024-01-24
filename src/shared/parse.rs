@@ -50,6 +50,23 @@ pub fn concat_every_n_elements(input_vec: Vec<&str>, n: usize) -> Vec<String> {
 
     result_vec
 }
+
+pub fn generate_a_string(n: usize) -> String {
+    // Create a string with 'A' repeated n times
+    let result: String = std::iter::repeat('A').take(n).collect();
+    result
+}
+
+pub fn pop_elements_from_vector(vector: &mut Vec<String>, n: usize) {
+    // Ensure not to pop more elements than the vector has
+    let num_elements_to_pop = n.min(vector.len());
+
+    // Calculate the starting index for elements to pop
+    let start_index = vector.len() - num_elements_to_pop;
+
+    // Truncate the vector to remove the elements
+    vector.truncate(start_index);
+}
 #[derive(PartialEq)]
 pub enum Mv_Direction {
     LEFT,

@@ -8,7 +8,7 @@ use crate::shared::parse::{
     flatten_vec, get_elements_by_indexes, join_string, move_elements, split_by_n, split_string,
     str2_string_vec, string_vec2_str, Mv_Direction,
 };
-use crate::{chr_to_mp, chr_to_mxas, salt_extender, MpType};
+use crate::{chr_to_mp, chr_to_mxas, salt_extender, DirecType, MpType};
 
 #[derive(Debug)]
 struct ValueError {
@@ -21,11 +21,7 @@ impl fmt::Display for ValueError {
 }
 
 impl Error for ValueError {}
-#[derive(Debug)]
-struct EncptInfo {
-    original_length: usize,
-    salt_short: usize, // 0 : buffer, 1 : salt
-}
+
 pub fn is_salt_short<'a>(buffer: &'a str, salt: &'a str) -> bool {
     if buffer.len() > salt.len() {
         return true;
@@ -77,26 +73,41 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
     // split the buffer and salt into vectors and parse them to mapped version
     let mut binding1: Vec<String> = split_string(&buffer);
     let mut binding2: Vec<String> = split_string(&salt);
-    let mut shrt = 0;
+
     match is_salt_short(&buffer, &salt) {
         true => {
             binding2 = split_string(&extended);
-            shrt = 1
         } // + add the shortest in struct
         false => binding1 = split_string(&extended),
     }
+    match is_salt_short(&buffer, &salt) {
+        true => {
+            println!("true")
+        } // + add the shortest in struct
+        false => println!("false"),
+    }
 
     let buffer_vec: Vec<&str>;
-    match chr_to_mp(string_vec2_str(&binding1), MpType::CharMap) {
+    match chr_to_mp(
+        string_vec2_str(&binding1),
+        MpType::CharMap,
+        DirecType::FORWARD,
+    ) {
         Ok(t) => buffer_vec = t,
         Err(e) => panic!("{}", e),
     };
     let salt_vec: Vec<&str>;
-    match chr_to_mp(string_vec2_str(&binding2), MpType::SaltMap) {
+    match chr_to_mp(
+        string_vec2_str(&binding2),
+        MpType::SaltMap,
+        DirecType::FORWARD,
+    ) {
         Ok(t) => salt_vec = t,
         Err(e) => panic!("{}", e),
     };
+    println!("im buffer vec : {:?}", &buffer_vec);
 
+    println!("salt vec encpt {:?}", &salt_vec);
     // Salt and buffer mixing
     let mixed: Vec<String>;
     match switch_chars(salt_vec, buffer_vec) {
@@ -109,7 +120,7 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
     let binding3 = flatten_vec(mixed);
     println!("bin3 {:?}", binding3);
     let mx_version: Vec<&str>;
-    match chr_to_mxas(string_vec2_str(&binding3)) {
+    match chr_to_mxas(string_vec2_str(&binding3), DirecType::FORWARD) {
         Ok(t) => mx_version = t,
         Err(e) => panic!("{}", e),
     }
@@ -144,18 +155,10 @@ pub fn df1t_encrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
     // faltten the matrix
     let flat_mtrx: Vec<String> = parsed_mtrx.into_iter().flatten().collect();
     // fulfill info and encrypt it
-    let info = EncptInfo {
-        original_length: buffer.len(),
-        salt_short: shrt,
-    };
-    let orgnl = cyph_info(info.original_length, 0);
-    let slt_shrt = cyph_info(info.salt_short, 1);
-    let info_vec = vec![
-        join_string(str2_string_vec(orgnl)),
-        ";".to_string(),
-        join_string(str2_string_vec(slt_shrt)),
-        "$".to_string(),
-    ];
+
+    let orgnl = cyph_info(buffer.len(), 142);
+
+    let info_vec = vec![join_string(str2_string_vec(orgnl)), "$".to_string()];
     println!(
         "{:?}",
         join_string(info_vec.to_vec()) + &join_string(flat_mtrx.to_vec())
