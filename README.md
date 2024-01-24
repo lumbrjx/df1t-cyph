@@ -108,10 +108,6 @@ the matrix get splitted by three main vectors following this representaion:
 
 after that, the matrix length will get added to each element of the three vectors
 
-- add **the green vector length + 2** to each green vector element
-- add **the red vector length** to each red vector element
-- add **the blue vector length + red vector length + 1** to each blue vector element
-
 ### Data swapping (second level mapping)
 
 while we used a fixed ref in the first mapping level, now we gonna make it a bit dynamic with the use of ceaser substitution over a set of ~ 70 diffrent chars as a refrence.

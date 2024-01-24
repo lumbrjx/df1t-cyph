@@ -1,6 +1,6 @@
 [package]
 name = "df1t-cyph"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "minimal rust encryption algorithm made by a solid structured sequential algorithms without any external cryptographic crates"
 repository ="https://github.com/CLOG9/df1t-cyph"
