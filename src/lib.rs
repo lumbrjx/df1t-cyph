@@ -40,6 +40,7 @@ mod tests {
         let salt = "76sqdf";
         let buffer = "pa89631ord";
         let enc = df1t_encrypt(buffer.to_owned(), salt.clone().to_string());
+        println!("{:?}", &enc);
         let res = df1t_decrypt(enc.unwrap().to_owned(), salt.to_owned());
         assert_eq!(res.unwrap().to_owned(), buffer);
     }
