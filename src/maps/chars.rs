@@ -130,5 +130,3 @@ pub const CHAR_MAP: [[&'static str; 3]; 62] = [
     ["8", "R2", "554"],
     ["9", "o0", "983"],
 ];
-//     char_map
-// }

@@ -68,11 +68,11 @@ pub fn pop_elements_from_vector(vector: &mut Vec<String>, n: usize) {
     vector.truncate(start_index);
 }
 #[derive(PartialEq)]
-pub enum Mv_Direction {
+pub enum MvDirection {
     LEFT,
     RIGHT,
 }
-pub fn move_elements(n: usize, direction: Mv_Direction) -> Vec<&'static str> {
+pub fn move_elements(n: usize, direction: MvDirection) -> Vec<&'static str> {
     let vec = vec![
         "e", "M", "y", "P", "c", "6", "I", "-", "8", "u", "F", "@", "b", "T", "w", ".", "J", "O",
         "z", "p", ":", "W", "7", "v", "V", "K", "5", "H", "q", "f", "&", "/", "A", "{", "Z", "d",
@@ -92,12 +92,12 @@ pub fn move_elements(n: usize, direction: Mv_Direction) -> Vec<&'static str> {
 
     // Create a new vector with the elements moved to the right
     let mut new_vec = vec![Default::default(); len];
-    if direction == Mv_Direction::RIGHT {
+    if direction == MvDirection::RIGHT {
         for i in 0..len {
             new_vec[(i + n) % len] = vec[i].clone();
         }
     }
-    if direction == Mv_Direction::LEFT {
+    if direction == MvDirection::LEFT {
         for i in 0..len {
             new_vec[i] = vec[(i + len - n) % len].clone();
         }

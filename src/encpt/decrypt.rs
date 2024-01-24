@@ -1,25 +1,23 @@
 use std::{error::Error, i32};
 
+use crate::encpt::mapping::mapper::*;
 use crate::{
-    chr_to_mp, chr_to_mxas,
     encpt::{
         mapping::switcher::reference_to_origin,
         math::{matrix::vecs_to_mtrx, process::rem_from_vec},
     },
-    salt_extender,
     shared::parse::{
         concat_every_n_elements, generate_a_string, get_indexes, join_string, move_elements,
         pop_elements_from_vector, rem_zeros, split_string, str2_string_vec, string_vec2_str,
-        Mv_Direction,
+        MvDirection,
     },
-    DirecType, MpType,
 };
 
 use super::analyse::read::reader;
 
 pub fn ceaser_unswap(indxs: Vec<String>, n: usize) -> Vec<i32> {
     let swp = get_indexes(
-        move_elements(n, Mv_Direction::RIGHT),
+        move_elements(n, MvDirection::RIGHT),
         string_vec2_str(&indxs),
     );
     let cnct: Vec<String> = swp.iter().map(|c| c.to_string()).collect();
@@ -90,7 +88,7 @@ pub fn df1t_decrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
         };
         // translating the salt to first level map
         let bfr_vec = ref_to_bfr_vec(slt_extd, mx_as_to_char);
-        println!("{:?}", bfr_vec);
+
         match chr_to_mp(
             string_vec2_str(&bfr_vec),
             MpType::CharMap,
@@ -105,7 +103,6 @@ pub fn df1t_decrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
         let mut bfr_vec = ref_to_bfr_vec(salt.clone(), mx_as_to_char);
         // pop the extended elements
         pop_elements_from_vector(&mut bfr_vec, salt.len() - orgnl[0] as usize);
-        println!("{:?}", bfr_vec);
 
         match chr_to_mp(
             string_vec2_str(&bfr_vec),
@@ -118,7 +115,7 @@ pub fn df1t_decrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
     } else {
         // translating the salt to first level map
         let bfr_vec = ref_to_bfr_vec(salt.clone(), mx_as_to_char);
-        println!("{:?}", bfr_vec);
+
         match chr_to_mp(
             string_vec2_str(&bfr_vec),
             MpType::CharMap,
@@ -129,17 +126,3 @@ pub fn df1t_decrypt(buffer: String, salt: String) -> Result<String, Box<dyn Erro
         };
     }
 }
-
-// mx version ["652", "165", "314", "671", "113", "422", "103", "923", "314", "194", "113", "389", "314", "422", "652", "923", "113", "194", "103", "422", "652", "389"]
-//             [652, 165, 314, 671, 113, 422, 103, 923, 314, 194, 113, 389, 314, 422, 652, 923, 113, 194, 103, 422, 652, 389]
-
-// green [165, 314, 671, 113, 923, 314, 194, 422, 652, 422]
-// red [652, 103, 314, 103, 0]
-// blue [422, 113, 389, 923, 113, 194, 652, 389, 0, 0]
-
-// green dcp : [165, 314, 671, 113, 923, 314, 194, 422, 652, 422]
-// red dcp : [652, 103, 314, 103, 0]
-// blue dcp : [422, 113, 389, 923, 113, 194, 652, 389, 0]
-
-// the original matrix [[652, 165, 314, 671, 113], [422, 103, 923, 314, 194], [113, 389, 314, 422, 652], [923, 113, 194, 103, 422], [652, 389, 101, 101, 101]]
-//                      [652, 165, 314, 671, 113, 422, 103, 923, 314, 194,      113, 389, 314, 422, 652, 923, 113, 194, 103, 422, 652, 389, 101, 101, 101]

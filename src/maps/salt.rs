@@ -62,5 +62,3 @@ pub const SALT_MAP: [[&'static str; 3]; 62] = [
     ["8", "O1", "430"],
     ["9", "Y0", "790"],
 ];
-//     char_map
-// }

@@ -1,6 +1,5 @@
 use std::f64;
 
-use crate::shared::parse::split_by_n;
 pub fn calc_n(chunk_len: usize) -> usize {
     let mut n = (chunk_len as f64).sqrt().round() as usize;
     let dif = n * n;
@@ -18,9 +17,6 @@ pub fn char_to_mtrx(chars: Vec<Vec<String>>) -> Vec<Vec<i32>> {
     final_vec
 }
 
-// from [["145","456","789"],["741","789","123"]]
-
-// to [[[1,4,5],[4,5,6],[7,8,9]],[[7,4,1],[7,8,9],[1,2,3]]]
 pub fn fill_mtrx_gaps(n: usize, orgnl_mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     let filled_mtrx: Vec<Vec<i32>> = orgnl_mtrx
         .iter()
@@ -44,7 +40,6 @@ pub fn mtrx_to_vecs(mtrx: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
 
     for (i, element) in mtrx.iter().enumerate() {
         for (j, sub) in element.iter().enumerate() {
-            // println!("{:?} : {:?} => {:?}", i, j, sub);
             if i > j {
                 blue.push(*sub);
             } else if j > i {
@@ -87,7 +82,7 @@ pub fn vecs_to_mtrx(mtrx: Vec<Vec<i32>>) -> Vec<i32> {
 
     let mut res: Vec<i32> = vec![];
     for (i, element) in virt_mtrx.iter().enumerate() {
-        for (j, sub) in element.iter().enumerate() {
+        for (j, _sub) in element.iter().enumerate() {
             if i < j && !green.is_empty() {
                 res.push(green.remove(0));
             } else if j < i && !blue.is_empty() {
@@ -164,13 +159,3 @@ mod tests {
         poppp()
     }
 }
-
-// left: `[652, 165, 314, 671, 113, 923,
-//         422, 389, 314, 194, 422, 652,
-//  113, 389, 652, 422, 422, 103,
-// 923, 113, 194, 0, 652, 389, 0, 0]`,
-
-// right: `[652, 165, 314, 671, 113, 422,
-//          103, 923, 314, 194, 113, 389,
-//          314, 422, 652, 923, 113, 194,
-//103, 422, 652, 389, 0, 0, 0]`'
