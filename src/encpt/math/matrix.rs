@@ -153,7 +153,6 @@ mod tests {
 
             while !my_vector.is_empty() {
                 let removed_element = my_vector.remove(0);
-                println!("Removed element: {} , {:?}", removed_element, my_vector);
             }
         }
         poppp()

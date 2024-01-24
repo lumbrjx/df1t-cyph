@@ -54,7 +54,6 @@ pub fn chr_to_mxas(vc: Vec<&str>, direc: DirecType) -> Result<Vec<&str>, &str> {
     for e in &vc {
         for s in CHAR_MAP {
             if e == &s[fs] {
-                println!("{}", e);
                 result.push(s[sc]);
             }
         }
